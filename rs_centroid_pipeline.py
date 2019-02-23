@@ -11,9 +11,7 @@ import ipdb
 PINK_MIN = np.array([165, 50, 50],np.uint8)
 PINK_MAX = np.array([175, 255, 255],np.uint8)
 
-print(str(sys.argv[1]))
 img=cv2.imread(str(sys.argv[1]))
-ipdb.set_trace()
 
 #Just for viewing purpose
 #img = imutils.resize(img, height = 480,width = 640)
@@ -38,38 +36,40 @@ im2, contours, hierarchy = cv2.findContours(opening,cv2.RETR_TREE,cv2.CHAIN_APPR
 if(len(contours)==0):
     stro="No contour detected for image "+str(sys.argv[1])
     print(stro)
-
-c = max(contours, key = cv2.contourArea)
-if cv2.contourArea(c) < 28:
-    stro="Detected contour too small"
-
-
-x,y,w,h = cv2.boundingRect(c)
-    # draw the book contour (in green)
-cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
-
-M = cv2.moments(c)
- 
-#calculate x,y coordinate of center
-if M["m00"] != 0:
-    cX = int(M["m10"] / M["m00"])
-    cY = int(M["m01"] / M["m00"])
 else:
-    stro="No centroid detected for image "+str(sys.argv[1])
-    print(stro)
-    cX, cY = 0, 0
+
+    c = max(contours, key = cv2.contourArea)
+
+    if cv2.contourArea(c) < 28:
+        stro="Detected contour too small"
+    else: 
+
+        x,y,w,h = cv2.boundingRect(c)
+    # draw the book contour (in green)
+        cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
+
+        M = cv2.moments(c)
+ 
+        #calculate x,y coordinate of center
+        if M["m00"] != 0:
+            cX = int(M["m10"] / M["m00"])
+            cY = int(M["m01"] / M["m00"])
+        else:
+            stro="No centroid detected for image "+str(sys.argv[1])
+            print(stro)
+            cX, cY = 0, 0
 
 
-cv2.circle(img, (cX, cY), 1, (255, 255, 255), -1)
-cv2.putText(img, "centroid", (cX - 25, cY - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+        cv2.circle(img, (cX, cY), 1, (255, 255, 255), -1)
+        cv2.putText(img, "centroid", (cX - 25, cY - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
 
-# show the images
-cv2.imshow("Marking_centroid", img)
-cv2.imwrite('/Users/harsh/Desktop/CMU_Sem_2/MRSD Project/Field_exp_data_set/Code for pipeline/'+'output_.jpg', img)
-#cv2.waitKey(0)
+        # show the images
+        cv2.imshow("Marking_centroid", img)
+        cv2.imwrite('/Users/harsh/Desktop/CMU_Sem_2/MRSD Project/Field_exp_data_set/Code for pipeline/'+'output_1.jpg', img)
+        #cv2.waitKey(0)
 
-print(cX,cY,img.shape[0],img.shape[1])
+        print(cX,cY,img.shape[0],img.shape[1])
 
-#return cX,cY,img.shape[0],img.shape[1]
+        #return cX,cY,img.shape[0],img.shape[1]
 
 
